@@ -6,7 +6,8 @@ public class Knife : MonoBehaviour
 {
     Rigidbody2D rb;
 
-    public float ThrowPos; 
+    public float ThrowPosX;
+    public float ThrowPosY = 0.5f;
 
     void Start()
     {
@@ -16,7 +17,7 @@ public class Knife : MonoBehaviour
   
     void Update()
     {
-        rb.velocity = new Vector2(ThrowPos , .5f);
+        rb.velocity = new Vector2(ThrowPosX , ThrowPosY);
     }
 
 

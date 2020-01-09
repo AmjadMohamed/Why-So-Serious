@@ -6,6 +6,7 @@ public class Movement : MonoBehaviour
 {
     private int cnt = 1;
     private int BoxCounter = 5 ;
+    private int FaceCounter = 1;
 
     public GameObject Rightknife;
     public GameObject Leftknife;
@@ -22,12 +23,13 @@ public class Movement : MonoBehaviour
     Vector2 MovementDir;
 
     Rigidbody2D rb;
-    SpriteRenderer Sr;
+    Animator anim;
+
 
     private void Start()
     {
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        Sr = GetComponent<SpriteRenderer>();
     }
 
     private void FixedUpdate()
@@ -42,12 +44,26 @@ public class Movement : MonoBehaviour
 
         if(Input.GetAxisRaw("Horizontal") < 0 )
         {
-            Sr.flipX = true;
+            FaceCounter = 0;
+            anim.SetInteger("IsFacing", 2);
+            anim.SetInteger("IsWalking", 1);
+            anim.SetBool("IsJumping", false);
         }
 
         else if(Input.GetAxisRaw("Horizontal") > 0 )
         {
-            Sr.flipX = false;
+            FaceCounter = 1;
+            anim.SetInteger("IsFacing", 1);
+            anim.SetInteger("IsWalking", 1);
+            anim.SetBool("IsJumping", false);
+        }
+
+        else
+        {
+            anim.SetInteger("IsFacing", 0);
+            anim.SetInteger("IsWalking", 0);
+            anim.SetBool("IsJumping", false);
+            anim.SetBool("IsThrowing", false);
         }
 
 
@@ -55,6 +71,8 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && cnt == 1)
         {
             Jump();
+            anim.SetBool("IsJumping", true);
+            anim.SetInteger("IsWalking", 0);
         }
 
         if (Input.GetKeyDown(KeyCode.Q) && transform.tag =="Player")
@@ -62,19 +80,48 @@ public class Movement : MonoBehaviour
             StartCoroutine("Dissapear");
         }
 
+        if (Input.GetKeyDown(KeyCode.W) && transform.tag == "Player" && Time.time > BoxDropRate && BoxCounter > 0)
+        {
+
+            BoxDropRate = Time.time + Rate;
+            BoxCounter--;
+
+            if (FaceCounter == 1)
+            {
+                anim.SetInteger("IsFacing", 1);
+                anim.SetBool("IsThrowing", true);
+            }
+
+            else
+            {
+                anim.SetInteger("IsFacing", 2);
+                anim.SetBool("IsThrowing", true);
+            }
+
+            PlaceBox();
+        }
+
         if (Input.GetKeyDown(KeyCode.E) && transform.tag == "Player" && Time.time > KnifeThrowRate)
         {
             KnifeThrowRate = Time.time + Rate;
+            
+
+            if(FaceCounter == 1)
+            {
+                anim.SetInteger("IsFacing", 1);
+                anim.SetBool("IsThrowing", true);
+            }
+
+            else
+            {
+                anim.SetInteger("IsFacing", 2);
+                anim.SetBool("IsThrowing", true);
+            }
+
             ThrowKnife();
         }
 
-        if (Input.GetKeyDown(KeyCode.W) && transform.tag == "Player" && Time.time > BoxDropRate && BoxCounter > 0)
-        {
-            
-            BoxDropRate = Time.time + Rate;
-            PlaceBox();
-            BoxCounter--;
-        }
+       
 
         if (Input.GetKeyDown(KeyCode.R) && transform.tag == "Player")
         {
@@ -97,7 +144,7 @@ public class Movement : MonoBehaviour
 
     IEnumerator SummonClone()
     {
-        Instantiation(Clone, Clone, 4.5f);
+        Instantiation(Clone, Clone, 4.5f , .5f);
         GetComponent<Movement>().enabled = false;
 
         yield return new WaitForSeconds(10);
@@ -113,26 +160,26 @@ public class Movement : MonoBehaviour
 
     void PlaceBox()
     {
-        Instantiation(Box, Box, 4.5f);
+        Instantiation(Box, Box, 4.5f , .5f);
     }
 
     void ThrowKnife()
     {
-        Instantiation(Rightknife , Leftknife , 3.5f);
+        Instantiation(Rightknife , Leftknife , 3.5f , -.5f);
     }
 
-    void Instantiation(GameObject RightObjectToInstantiate , GameObject LeftObjectToInstantiate,float Xpos)
+    void Instantiation(GameObject RightObjectToInstantiate , GameObject LeftObjectToInstantiate,float Xpos , float Ypos)
     {
         Vector2 InstantiatePos = transform.position;
-        if (Sr.flipX == false)
+        if (FaceCounter == 1)
         {
-            InstantiatePos += new Vector2(Xpos, .5f);
+            InstantiatePos += new Vector2(Xpos, Ypos);
             var obj = Instantiate(RightObjectToInstantiate, InstantiatePos, Quaternion.identity);
             Destroy(obj, 10);
         }
-        else if (Sr.flipX == true)
+        else if (FaceCounter == 0)
         {
-            InstantiatePos += new Vector2(-Xpos , .5f);
+            InstantiatePos += new Vector2(-Xpos , Ypos);
             var obj = Instantiate(LeftObjectToInstantiate, InstantiatePos, Quaternion.identity);
             Destroy(obj, 10);
         }
