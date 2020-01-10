@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Platform
+  - Particle
+  - Box
+  - Clone
   layers:
   - Default
   - TransparentFX

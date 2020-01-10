@@ -34,15 +34,18 @@ public class Movement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Storing Horizontal Movement Values 
         MovementDir.x = Input.GetAxisRaw("Horizontal") * movemenSpeed;     
     }
 
 
     void Update()
-    {
+    {   
+        //moving in the directions stored
         rb.velocity = MovementDir;
 
-        if(Input.GetAxisRaw("Horizontal") < 0 )
+        // Walking left 
+        if(Input.GetAxisRaw("Horizontal") < 0 && cnt == 1)
         {
             FaceCounter = 0;
             anim.SetInteger("IsFacing", 2);
@@ -50,7 +53,8 @@ public class Movement : MonoBehaviour
             anim.SetBool("IsJumping", false);
         }
 
-        else if(Input.GetAxisRaw("Horizontal") > 0 )
+        // Walking Right
+        else if(Input.GetAxisRaw("Horizontal") > 0 && cnt == 1)
         {
             FaceCounter = 1;
             anim.SetInteger("IsFacing", 1);
@@ -58,16 +62,21 @@ public class Movement : MonoBehaviour
             anim.SetBool("IsJumping", false);
         }
 
-        else
+        else if(cnt == 0)
         {
-            anim.SetInteger("IsFacing", 0);
+            anim.SetBool("IsJumping", true);
             anim.SetInteger("IsWalking", 0);
-            anim.SetBool("IsJumping", false);
-            anim.SetBool("IsThrowing", false);
         }
 
 
+        // Idling
+        else
+        {
+            ActivateIdleAnim();
+        }
 
+
+        // Jumping
         if (Input.GetKeyDown(KeyCode.Space) && cnt == 1)
         {
             Jump();
@@ -75,14 +84,16 @@ public class Movement : MonoBehaviour
             anim.SetInteger("IsWalking", 0);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && transform.tag =="Player")
+        // Dissapearing 
+        if (Input.GetKeyDown(KeyCode.Q) && transform.tag =="Player" && cnt == 1)
         {
             StartCoroutine("Dissapear");
         }
 
-        if (Input.GetKeyDown(KeyCode.W) && transform.tag == "Player" && Time.time > BoxDropRate && BoxCounter > 0)
+        // Placing Boxes
+        if (Input.GetKeyDown(KeyCode.W) && transform.tag == "Player" && Time.time > BoxDropRate && BoxCounter > 0 )
         {
-
+            // delay between placing every box 
             BoxDropRate = Time.time + Rate;
             BoxCounter--;
 
@@ -101,6 +112,7 @@ public class Movement : MonoBehaviour
             PlaceBox();
         }
 
+        // throwing knifes
         if (Input.GetKeyDown(KeyCode.E) && transform.tag == "Player" && Time.time > KnifeThrowRate)
         {
             KnifeThrowRate = Time.time + Rate;
@@ -119,16 +131,19 @@ public class Movement : MonoBehaviour
             }
 
             ThrowKnife();
+
         }
 
        
-
+        //Summon Clone
         if (Input.GetKeyDown(KeyCode.R) && transform.tag == "Player")
         {
             StartCoroutine("SummonClone");
+            ActivateIdleAnim();
         }
     }
 
+    // Ienumerator function lets me to do some actions then wait for a certain amount of time then do another action
     IEnumerator Dissapear()
     {
         Color color1 = new Color(255, 255, 255 , .25f);
@@ -168,29 +183,38 @@ public class Movement : MonoBehaviour
         Instantiation(Rightknife , Leftknife , 3.5f , -.5f);
     }
 
+    // a function to instantiate objects 
     void Instantiation(GameObject RightObjectToInstantiate , GameObject LeftObjectToInstantiate,float Xpos , float Ypos)
     {
         Vector2 InstantiatePos = transform.position;
+
         if (FaceCounter == 1)
         {
             InstantiatePos += new Vector2(Xpos, Ypos);
-            var obj = Instantiate(RightObjectToInstantiate, InstantiatePos, Quaternion.identity);
-            Destroy(obj, 10);
+            Instantiate(RightObjectToInstantiate, InstantiatePos, Quaternion.identity);
         }
+
         else if (FaceCounter == 0)
         {
             InstantiatePos += new Vector2(-Xpos , Ypos);
-            var obj = Instantiate(LeftObjectToInstantiate, InstantiatePos, Quaternion.identity);
-            Destroy(obj, 10);
+            Instantiate(LeftObjectToInstantiate, InstantiatePos, Quaternion.identity);
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    void ActivateIdleAnim()
+    {
+        anim.SetInteger("IsFacing", 0);
+        anim.SetInteger("IsWalking", 0);
+        anim.SetBool("IsJumping", false);
+        anim.SetBool("IsThrowing", false);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
         cnt = 0;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         cnt = 1;
     }

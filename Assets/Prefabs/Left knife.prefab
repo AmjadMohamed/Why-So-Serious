@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ThrowPosX: -30
-  ThrowPosY: 0.5
+  ThrowPosY: 0
 --- !u!95 &3049345507091454622
 Animator:
   serializedVersion: 3

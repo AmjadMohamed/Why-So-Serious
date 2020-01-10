@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 5977644292386112134}
   - component: {fileID: 1541034376173809217}
   - component: {fileID: 7370403938812877442}
+  - component: {fileID: 6798708616892378658}
   m_Layer: 0
   m_Name: Box
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,3 +149,18 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &6798708616892378658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 362937491366787658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 552e9be884a36374081c2722f4ecca55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DestroyParticles: {fileID: 6816203006558202763, guid: 0173aedf28947494bb6b2a86ce13f893,
+    type: 3}
+  DestroyAfter: 10
