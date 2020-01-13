@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    private int cnt = 1;
+    private int cnt = 0;
     private int BoxCounter = 5 ;
     private int FaceCounter = 1;
 
@@ -32,21 +32,13 @@ public class Movement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void FixedUpdate()
-    {
-        // Storing Horizontal Movement Values 
-        MovementDir.x = Input.GetAxisRaw("Horizontal") * movemenSpeed;     
-    }
-
 
     void Update()
     {   
-        //moving in the directions stored
-        rb.velocity = MovementDir;
-
         // Walking left 
         if(Input.GetAxisRaw("Horizontal") < 0 && cnt == 1)
         {
+            transform.Translate(Vector2.left * movemenSpeed * Time.deltaTime);
             FaceCounter = 0;
             anim.SetInteger("IsFacing", 2);
             anim.SetInteger("IsWalking", 1);
@@ -56,6 +48,7 @@ public class Movement : MonoBehaviour
         // Walking Right
         else if(Input.GetAxisRaw("Horizontal") > 0 && cnt == 1)
         {
+            transform.Translate(Vector2.right * movemenSpeed * Time.deltaTime);
             FaceCounter = 1;
             anim.SetInteger("IsFacing", 1);
             anim.SetInteger("IsWalking", 1);
@@ -79,9 +72,7 @@ public class Movement : MonoBehaviour
         // Jumping
         if (Input.GetKeyDown(KeyCode.Space) && cnt == 1)
         {
-            Jump();
-            anim.SetBool("IsJumping", true);
-            anim.SetInteger("IsWalking", 0);
+            Jump();           
         }
 
         // Dissapearing 
@@ -97,18 +88,6 @@ public class Movement : MonoBehaviour
             BoxDropRate = Time.time + Rate;
             BoxCounter--;
 
-            if (FaceCounter == 1)
-            {
-                anim.SetInteger("IsFacing", 1);
-                anim.SetBool("IsThrowing", true);
-            }
-
-            else
-            {
-                anim.SetInteger("IsFacing", 2);
-                anim.SetBool("IsThrowing", true);
-            }
-
             PlaceBox();
         }
 
@@ -117,19 +96,6 @@ public class Movement : MonoBehaviour
         {
             KnifeThrowRate = Time.time + Rate;
             
-
-            if(FaceCounter == 1)
-            {
-                anim.SetInteger("IsFacing", 1);
-                anim.SetBool("IsThrowing", true);
-            }
-
-            else
-            {
-                anim.SetInteger("IsFacing", 2);
-                anim.SetBool("IsThrowing", true);
-            }
-
             ThrowKnife();
 
         }
@@ -138,8 +104,7 @@ public class Movement : MonoBehaviour
         //Summon Clone
         if (Input.GetKeyDown(KeyCode.R) && transform.tag == "Player")
         {
-            StartCoroutine("SummonClone");
-            ActivateIdleAnim();
+            StartCoroutine("SummonClone");           
         }
     }
 
@@ -160,27 +125,56 @@ public class Movement : MonoBehaviour
     IEnumerator SummonClone()
     {
         Instantiation(Clone, Clone, 4.5f , .5f);
-        GetComponent<Movement>().enabled = false;
+        GetComponent<Player>().enabled = false;
+        ActivateIdleAnim();
 
         yield return new WaitForSeconds(10);
 
-        GetComponent<Movement>().enabled = true;        
+        GetComponent<Player>().enabled = true;        
     }
 
 
     void Jump()
     {
-        rb.velocity = new Vector2(0 , 1 * jumpPower);
+        float x = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(x * movemenSpeed , 1 * jumpPower);
+        anim.SetBool("IsJumping", true);
+        anim.SetInteger("IsWalking", 0);
     }
 
     void PlaceBox()
     {
         Instantiation(Box, Box, 4.5f , .5f);
+
+        if (FaceCounter == 1)
+        {
+            anim.SetInteger("IsFacing", 1);
+            anim.SetBool("IsThrowing", true);
+        }
+
+        else
+        {
+            anim.SetInteger("IsFacing", 2);
+            anim.SetBool("IsThrowing", true);
+        }
     }
 
     void ThrowKnife()
     {
         Instantiation(Rightknife , Leftknife , 3.5f , -.5f);
+
+        if (FaceCounter == 1)
+        {
+            anim.SetInteger("IsFacing", 1);
+            anim.SetBool("IsThrowing", true);
+        }
+
+        else
+        {
+            anim.SetInteger("IsFacing", 2);
+            anim.SetBool("IsThrowing", true);
+        }
+
     }
 
     // a function to instantiate objects 

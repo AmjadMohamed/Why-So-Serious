@@ -100,7 +100,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 50
+  m_GravityScale: 10
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -122,7 +122,7 @@ MonoBehaviour:
   Leftknife: {fileID: 0}
   Box: {fileID: 362937491366787658, guid: 3c6067020533e14408ffeab12fceba50, type: 3}
   Clone: {fileID: 0}
-  jumpPower: 300
+  jumpPower: 50
   movemenSpeed: 20
   Rate: 2
 --- !u!61 &1848307933254017003
