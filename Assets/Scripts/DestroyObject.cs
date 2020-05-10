@@ -21,7 +21,7 @@ public class DestroyObject : MonoBehaviour
 
     IEnumerator DestroyObj()
     {
-
+        // the -.02 to instantiate almost 1 or 2 particles before getting fully destroyed.
         yield return new WaitForSeconds(DestroyAfter - .02f);
 
         Instantiate(DestroyParticles, this.gameObject.transform.position , Quaternion.identity);

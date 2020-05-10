@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 8501791324951005937}
   - component: {fileID: 7474061200606885829}
   - component: {fileID: 8096053235999781492}
+  - component: {fileID: 8109436650597777077}
+  - component: {fileID: -5816394242840648928}
   m_Layer: 0
   m_Name: Clone
   m_TagString: Clone
@@ -31,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848307933254017001}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.5, y: 0, z: 0}
+  m_LocalPosition: {x: 32.955563, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -100,7 +102,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 10
+  m_GravityScale: 20
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -113,16 +115,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1848307933254017001}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4c1cafc2f45662f4dacc33ae5874ffa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ButtonCounter: 1
+  IsGrounded: 1
+  BoxCounter: 5
+  CloneCounter: 1
   Rightknife: {fileID: 0}
   Leftknife: {fileID: 0}
   Box: {fileID: 362937491366787658, guid: 3c6067020533e14408ffeab12fceba50, type: 3}
   Clone: {fileID: 0}
-  jumpPower: 50
+  jumpPower: 110
   movemenSpeed: 20
   Rate: 2
 --- !u!61 &1848307933254017003
@@ -138,18 +144,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.30889726, y: -0.3233571}
+  m_Offset: {x: -0.5, y: -1.7547569}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.24, y: 10.24}
+    oldSize: {x: 17.066668, y: 17.066668}
     newSize: {x: 10, y: 10}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.2054553, y: 9.091186}
+  m_Size: {x: 4.4122543, y: 12.654701}
   m_EdgeRadius: 0
 --- !u!95 &8501791324951005937
 Animator:
@@ -198,11 +204,11 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.3, y: -5.8}
+  m_Offset: {x: -0.5, y: -8.86}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 10.24, y: 10.24}
+    oldSize: {x: 17.066668, y: 17.066668}
     newSize: {x: 10, y: 10}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -211,3 +217,44 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.36, y: 0.5}
   m_EdgeRadius: 0
+--- !u!61 &8109436650597777077
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848307933254017001}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.26862335, y: 6.081581}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 17.066668, y: 17.066668}
+    newSize: {x: 10, y: 10}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 9.236084, y: 2.1496735}
+  m_EdgeRadius: 0
+--- !u!114 &-5816394242840648928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848307933254017001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a700a4dc7eaabe8429c0eac0dc905f59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsGrounded: 1
+  jumpPower: 110
+  movemenSpeed: 20

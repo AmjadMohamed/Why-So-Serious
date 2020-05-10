@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private int cnt = 0;
-    private int BoxCounter = 5 ;
+    public int ButtonCounter = 1;
+    public int IsGrounded = 0;
+    public int BoxCounter = 5 ;
+    public int CloneCounter = 1;
     private int FaceCounter = 1;
 
     public GameObject Rightknife;
     public GameObject Leftknife;
     public GameObject Box;
     public GameObject Clone;
+    public GameObject Camera;
 
     public float jumpPower = 5.0f;
     public float movemenSpeed = 2.0f;
@@ -26,7 +29,7 @@ public class Player : MonoBehaviour
     Animator anim;
 
 
-    private void Start()
+    void Start()
     {
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -34,28 +37,21 @@ public class Player : MonoBehaviour
 
 
     void Update()
-    {   
+    {
+        //Debug.Log(CloneCounter);
         // Walking left 
-        if(Input.GetAxisRaw("Horizontal") < 0 && cnt == 1)
+        if(Input.GetAxisRaw("Horizontal") < 0 )
         {
-            transform.Translate(Vector2.left * movemenSpeed * Time.deltaTime);
-            FaceCounter = 0;
-            anim.SetInteger("IsFacing", 2);
-            anim.SetInteger("IsWalking", 1);
-            anim.SetBool("IsJumping", false);
+            WalkToTheLeft();
         }
 
         // Walking Right
-        else if(Input.GetAxisRaw("Horizontal") > 0 && cnt == 1)
+        else if(Input.GetAxisRaw("Horizontal") > 0 )
         {
-            transform.Translate(Vector2.right * movemenSpeed * Time.deltaTime);
-            FaceCounter = 1;
-            anim.SetInteger("IsFacing", 1);
-            anim.SetInteger("IsWalking", 1);
-            anim.SetBool("IsJumping", false);
+            WalkToTheRight();
         }
 
-        else if(cnt == 0)
+        else if(IsGrounded == 0)
         {
             anim.SetBool("IsJumping", true);
             anim.SetInteger("IsWalking", 0);
@@ -70,41 +66,34 @@ public class Player : MonoBehaviour
 
 
         // Jumping
-        if (Input.GetKeyDown(KeyCode.Space) && cnt == 1)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Jump();           
         }
 
         // Dissapearing 
-        if (Input.GetKeyDown(KeyCode.Q) && transform.tag =="Player" && cnt == 1)
+        if (Input.GetKeyDown(KeyCode.Q) )
         {
-            StartCoroutine("Dissapear");
+            ShacoDissapear();
         }
 
         // Placing Boxes
-        if (Input.GetKeyDown(KeyCode.W) && transform.tag == "Player" && Time.time > BoxDropRate && BoxCounter > 0 )
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            // delay between placing every box 
-            BoxDropRate = Time.time + Rate;
-            BoxCounter--;
-
             PlaceBox();
         }
 
         // throwing knifes
-        if (Input.GetKeyDown(KeyCode.E) && transform.tag == "Player" && Time.time > KnifeThrowRate)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            KnifeThrowRate = Time.time + Rate;
-            
             ThrowKnife();
-
         }
 
        
         //Summon Clone
-        if (Input.GetKeyDown(KeyCode.R) && transform.tag == "Player")
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine("SummonClone");           
+            ShacoSumonClone();         
         }
     }
 
@@ -124,57 +113,99 @@ public class Player : MonoBehaviour
 
     IEnumerator SummonClone()
     {
-        Instantiation(Clone, Clone, 4.5f , .5f);
+        Instantiation(Clone, Clone, 10f , .5f);
         GetComponent<Player>().enabled = false;
+        ButtonCounter = 0;
         ActivateIdleAnim();
 
         yield return new WaitForSeconds(10);
 
-        GetComponent<Player>().enabled = true;        
+        GetComponent<Player>().enabled = true;
+        ButtonCounter = 1;
     }
 
 
-    void Jump()
+    public void Jump()
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(x * movemenSpeed , 1 * jumpPower);
-        anim.SetBool("IsJumping", true);
-        anim.SetInteger("IsWalking", 0);
-    }
-
-    void PlaceBox()
-    {
-        Instantiation(Box, Box, 4.5f , .5f);
-
-        if (FaceCounter == 1)
+        //float x = Input.GetAxisRaw("Horizontal");
+        if (IsGrounded == 1 && ButtonCounter == 1)
         {
-            anim.SetInteger("IsFacing", 1);
-            anim.SetBool("IsThrowing", true);
-        }
-
-        else
-        {
-            anim.SetInteger("IsFacing", 2);
-            anim.SetBool("IsThrowing", true);
+            rb.velocity = new Vector2(0, 1 * jumpPower);
+            anim.SetBool("IsJumping", true);
+            anim.SetInteger("IsWalking", 0);
         }
     }
 
-    void ThrowKnife()
+    public void ShacoDissapear()
     {
-        Instantiation(Rightknife , Leftknife , 3.5f , -.5f);
-
-        if (FaceCounter == 1)
+        if (transform.tag == "Player" && IsGrounded == 1 && ButtonCounter == 1)
         {
-            anim.SetInteger("IsFacing", 1);
-            anim.SetBool("IsThrowing", true);
+            StartCoroutine("Dissapear");
         }
+    }
 
-        else
+    public void ShacoSumonClone()
+    {
+        if (transform.tag == "Player" && ButtonCounter == 1 && CloneCounter > 0)
         {
-            anim.SetInteger("IsFacing", 2);
-            anim.SetBool("IsThrowing", true);
+            StartCoroutine("SummonClone");
+            CloneCounter--;
         }
+    }
 
+    public void PlaceBox()
+    {
+        if(transform.tag == "Player" && ButtonCounter == 1)
+        {
+            if (Time.time > BoxDropRate && BoxCounter > 0)
+            {
+                // delay between placing every box 
+                BoxDropRate = Time.time + Rate;
+                BoxCounter--;
+
+                Instantiation(Box, Box, 8.5f, .5f);
+
+                if (FaceCounter == 1)
+                {
+                    anim.SetInteger("IsFacing", 1);
+                    anim.SetBool("IsThrowing", true);
+                }
+
+                else
+                {
+                    anim.SetInteger("IsFacing", 2);
+                    anim.SetBool("IsThrowing", true);
+                }
+            }
+
+        }
+    }
+
+    public void ThrowKnife()
+    {
+        if(transform.tag == "Player" && ButtonCounter == 1)
+        {
+            // delay between throwing every knife 
+            if (Time.time > KnifeThrowRate)
+            {
+                KnifeThrowRate = Time.time + Rate;
+                Instantiation(Rightknife, Leftknife, 5.5f, -.5f);
+
+                if (FaceCounter == 1)
+                {
+                    anim.SetInteger("IsFacing", 1);
+                    anim.SetBool("IsThrowing", true);
+                }
+
+                else
+                {
+                    anim.SetInteger("IsFacing", 2);
+                    anim.SetBool("IsThrowing", true);
+                }
+
+            }
+
+        }
     }
 
     // a function to instantiate objects 
@@ -205,12 +236,59 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        cnt = 0;
+        IsGrounded = 0;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        cnt = 1;
+        IsGrounded = 1;
     }
+
+    // moving the character to the left.
+    public void WalkToTheLeft()
+    {
+        if (ButtonCounter == 1)
+        {
+            transform.Translate(Vector2.left * movemenSpeed * Time.deltaTime);
+            if (IsGrounded == 1)
+            {
+                FaceCounter = 0;
+                anim.SetInteger("IsFacing", 2);
+                anim.SetInteger("IsWalking", 1);
+                anim.SetBool("IsJumping", false);
+            }
+        }
+    }
+
+    // moving the character to the right.
+    public void WalkToTheRight()
+    {
+        if (ButtonCounter == 1)
+        {
+            transform.Translate(Vector2.right * movemenSpeed * Time.deltaTime);
+            if (IsGrounded == 1)
+            {
+                FaceCounter = 1;
+                anim.SetInteger("IsFacing", 1);
+                anim.SetInteger("IsWalking", 1);
+                anim.SetBool("IsJumping", false);
+            }
+        }
+    }
+
+    // Moving The camera to the next arena.
+    private void OnTriggerEnter2D(Collider2D other)
+    {        
+        if (other.transform.tag == "LevelTrigger")
+        {
+            Vector3 NewCamPos = new Vector3(Camera.transform.position.x + 220, Camera.transform.position.y, Camera.transform.position.z);
+            Camera.transform.position = NewCamPos;
+            Vector3 NewTriggerPos = new Vector3(other.transform.position.x + 220, other.transform.position.y, other.transform.position.z);
+            other.transform.position = NewTriggerPos;
+        }
+
+    }
+
+
 
 }
