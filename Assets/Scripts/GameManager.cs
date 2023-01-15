@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject Shaco;
     [SerializeField] GameObject LockedDoor;
     [SerializeField] GameObject OpenedDoor;
+    [SerializeField] GameObject RestartButton;
     public GameObject WinPanel;
     public GameObject LosePanel;
     public GameObject TutorialPanel;
@@ -52,8 +53,7 @@ public class GameManager : MonoBehaviour
             // lose state
             if (Shaco.GetComponent<Shaco_Script>().BoxCounter < 1 && Shaco.GetComponent<Shaco_Script>().CloneCounter < 1 && PressedBoxesCounter < 3)
             {
-                LostGame();
-                LoseCause.text = "You Lost Because You Ran Out Of Solutions!!";
+                RestartButton.SetActive(true);
             }
         }
 
@@ -77,7 +77,8 @@ public class GameManager : MonoBehaviour
 
     public void WonGame()
     {
-        Time.timeScale = 0;
+        SoundManager.Instance.audioSource.clip = SoundManager.Instance.WinMusic;
+        SoundManager.Instance.audioSource.Play();
         if (PlayerPrefs.HasKey(HighestScorePlayerPrefKey))
         {
             // updating new highest score
@@ -93,10 +94,13 @@ public class GameManager : MonoBehaviour
         Score.text = $"Your Score is: {Mathf.Floor(Timer / 60).ToString("00")} : {Mathf.FloorToInt(Timer % 60).ToString("00")}";
         HighestScore.text = $"Highest Score is: {Mathf.Floor(PlayerPrefs.GetFloat(HighestScorePlayerPrefKey) / 60).ToString("00")} : {Mathf.FloorToInt(PlayerPrefs.GetFloat(HighestScorePlayerPrefKey) % 60).ToString("00")}";
         WinPanel.SetActive(true);
+        Time.timeScale = 0;
     }
 
     public void LostGame()
     {
+        SoundManager.Instance.audioSource.clip = SoundManager.Instance.LoseMusic;
+        SoundManager.Instance.audioSource.Play();
         Time.timeScale = 0;
         LosePanel.SetActive(true);
     }

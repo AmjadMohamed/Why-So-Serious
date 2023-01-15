@@ -108,6 +108,7 @@ public class Shaco_Script : MonoBehaviour
         Color color2 = new Color(255, 255, 255, 1f);
         Physics2D.IgnoreLayerCollision(6, 7, true);
         GetComponent<SpriteRenderer>().color = color1;
+        SoundManager.Instance.audioSource.PlayOneShot(SoundManager.Instance.KnifeThrow);
 
         yield return new WaitForSeconds(DissapearLifeTime);
 
@@ -124,6 +125,7 @@ public class Shaco_Script : MonoBehaviour
         //float x = Input.GetAxisRaw("Horizontal");
         if (IsGrounded == 1 && IsRealShaco == 1)
         {
+            SoundManager.Instance.audioSource.PlayOneShot(SoundManager.Instance.KnifeThrow);
             rb.velocity = new Vector2(0, 1 * jumpPower);
             anim.SetBool("IsJumping", true);
             anim.SetInteger("IsWalking", 0);
@@ -157,7 +159,7 @@ public class Shaco_Script : MonoBehaviour
                 // delay between placing every box 
                 BoxDropRate = Time.time + Rate;
                 BoxCounter--;
-
+                SoundManager.Instance.audioSource.PlayOneShot(SoundManager.Instance.KnifeThrow);
                 Instantiation(Box, Box, 8.5f, .5f);
 
                 if (FaceCounter == 1)
@@ -183,6 +185,7 @@ public class Shaco_Script : MonoBehaviour
             // delay between throwing every knife 
             if (Time.time > KnifeThrowRate)
             {
+                SoundManager.Instance.audioSource.PlayOneShot(SoundManager.Instance.KnifeThrow);
                 KnifeThrowRate = Time.time + Rate;
                 Instantiation(Rightknife, Leftknife, 5.5f, -.5f);
 
@@ -207,6 +210,7 @@ public class Shaco_Script : MonoBehaviour
     {
         Instantiation(Clone, Clone, 10f, .5f);
         GetComponent<Shaco_Script>().enabled = false;
+        SoundManager.Instance.audioSource.PlayOneShot(SoundManager.Instance.KnifeThrow);
         IsRealShaco = 0;
         ActivateIdleAnim();
 

@@ -20,6 +20,7 @@ TagManager:
   - E Button
   - R Button
   - Jump Button
+  - Audio Source
   layers:
   - Default
   - TransparentFX
