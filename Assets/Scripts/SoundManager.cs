@@ -23,7 +23,5 @@ public class SoundManager : MonoBehaviour
             instance = this;
         }
         audioSource = GameObject.FindGameObjectWithTag("Audio Source").GetComponent<AudioSource>();
-        audioSource.clip= MainMusic;
-        audioSource.Play();
     }
 }

@@ -107,6 +107,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        SoundManager.Instance.audioSource.clip = SoundManager.Instance.MainMusic;
+        SoundManager.Instance.audioSource.Play();
         Time.timeScale = 1;
         SceneManager.LoadScene(1);
     }
