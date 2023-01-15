@@ -11,6 +11,15 @@ TagManager:
   - LevelTrigger
   - BluePortal
   - OrangePortal
+  - Knife
+  - Door
+  - Right Button
+  - Left Button
+  - Q Button
+  - W Button
+  - E Button
+  - R Button
+  - Jump Button
   layers:
   - Default
   - TransparentFX
@@ -18,8 +27,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Ignored
+  - Player
   - No Post Processing
   - 
   - 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class DestroyObject : MonoBehaviour
 {
-    public GameObject DestroyParticles;
-    public float DestroyAfter ;
+    [SerializeField] GameObject DestroyParticles;
+    [SerializeField] float DestroyAfter ;
 
 
     void Update()
@@ -25,5 +25,6 @@ public class DestroyObject : MonoBehaviour
         yield return new WaitForSeconds(DestroyAfter - .02f);
 
         Instantiate(DestroyParticles, this.gameObject.transform.position , Quaternion.identity);
+        this.GetComponent<Collider2D>().enabled = false; // this will do the trick to call the oncollisionexit for the buttons
     }
 }

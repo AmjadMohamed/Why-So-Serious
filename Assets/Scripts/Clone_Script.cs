@@ -4,25 +4,17 @@ using UnityEngine;
 
 public class Clone_Script : MonoBehaviour
 {
-   // public int ButtonCounter = 1;
+    // public
     public int IsGrounded = 0;
-   // private int BoxCounter = 5;
-    private int FaceCounter = 1;
-
-    //public GameObject Rightknife;
-    //public GameObject Leftknife;
-    //public GameObject Box;
-    //public GameObject Clone;
-
     public float jumpPower = 5.0f;
     public float movemenSpeed = 2.0f;
-    //public float Rate = 2.0f;
-   // private float BoxDropRate = 0;
-    //private float KnifeThrowRate = 0;
-    
 
+
+    // private
+    private bool IsWalkingRight = false;
+    private bool IsWalkingLeft = false;
+    private int FaceCounter = 1;
     Vector2 MovementDir;
-
     Rigidbody2D rb;
     Animator anim;
 
@@ -38,13 +30,13 @@ public class Clone_Script : MonoBehaviour
     {
         // Debug.Log(IsGrounded);
         // Walking left 
-        if (Input.GetAxisRaw("Horizontal") < 0)
+        if (Input.GetAxisRaw("Horizontal") < 0 || IsWalkingLeft)
         {
             WalkToTheLeft();
         }
 
         // Walking Right
-        else if (Input.GetAxisRaw("Horizontal") > 0)
+        else if (Input.GetAxisRaw("Horizontal") > 0 || IsWalkingRight)
         {
             WalkToTheRight();
         }
@@ -72,7 +64,7 @@ public class Clone_Script : MonoBehaviour
     }
 
 
-   
+
     public void Jump()
     {
         //float x = Input.GetAxisRaw("Horizontal");
@@ -84,7 +76,7 @@ public class Clone_Script : MonoBehaviour
         }
     }
 
-  
+
     void ActivateIdleAnim()
     {
         anim.SetInteger("IsFacing", 0);
@@ -105,28 +97,55 @@ public class Clone_Script : MonoBehaviour
 
     public void WalkToTheLeft()
     {
-            transform.Translate(Vector2.left * movemenSpeed * Time.deltaTime);
-            if (IsGrounded == 1)
-            {
-                FaceCounter = 0;
-                anim.SetInteger("IsFacing", 2);
-                anim.SetInteger("IsWalking", 1);
-                anim.SetBool("IsJumping", false);
-            }
-        
+        transform.Translate(Vector2.left * movemenSpeed * Time.deltaTime);
+        if (IsGrounded == 1)
+        {
+            FaceCounter = 0;
+            anim.SetInteger("IsFacing", 2);
+            anim.SetInteger("IsWalking", 1);
+            anim.SetBool("IsJumping", false);
+        }
+
     }
 
     public void WalkToTheRight()
-    {       
-            transform.Translate(Vector2.right * movemenSpeed * Time.deltaTime);
-            if (IsGrounded == 1)
-            {
-                FaceCounter = 1;
-                anim.SetInteger("IsFacing", 1);
-                anim.SetInteger("IsWalking", 1);
-                anim.SetBool("IsJumping", false);
-            }
-        
+    {
+        transform.Translate(Vector2.right * movemenSpeed * Time.deltaTime);
+        if (IsGrounded == 1)
+        {
+            FaceCounter = 1;
+            anim.SetInteger("IsFacing", 1);
+            anim.SetInteger("IsWalking", 1);
+            anim.SetBool("IsJumping", false);
+        }
+
+    }
+
+    public void SetWalkingToTheRight()
+    {
+        IsWalkingRight = true;
+    }
+
+    public void SetWalkingToTheLeft()
+    {
+        IsWalkingLeft = true;
+    }
+
+    public void SetIdle()
+    {
+        IsWalkingLeft = false;
+        IsWalkingRight = false;
+    }
+
+    private void OnDisable()
+    {
+
+        var go = GameObject.FindGameObjectWithTag("Player");
+        if (go != null)
+        {
+            go.GetComponent<Shaco_Script>().enabled = true;
+            go.GetComponent<Shaco_Script>().IsRealShaco = 1;
+        }
     }
 
 }
